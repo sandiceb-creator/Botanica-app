@@ -1130,5 +1130,61 @@
     });
   </script>
 
+
+  <!-- Banner iOS Install -->
+  <div id="ios-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:linear-gradient(135deg,#0c1a0e,#162416);
+    border-top:1px solid rgba(201,149,74,0.4);
+    padding:16px 20px 28px;
+    box-shadow:0 -8px 32px rgba(0,0,0,0.4);">
+    <button onclick="document.getElementById('ios-banner').style.display='none'"
+      style="position:absolute;top:10px;right:14px;background:none;border:none;
+      color:rgba(201,149,74,0.6);font-size:1.2rem;cursor:pointer;line-height:1">✕</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <img src="icon-192.png" style="width:42px;height:42px;border-radius:10px;flex-shrink:0"/>
+      <div>
+        <div style="font-family:'Jost',sans-serif;font-size:0.85rem;font-weight:500;
+          color:#f2ead8;letter-spacing:0.03em">Instalar Botanica App</div>
+        <div style="font-family:'Jost',sans-serif;font-size:0.72rem;color:#b8aa88;margin-top:2px">
+          Gratis · Sin App Store</div>
+      </div>
+    </div>
+    <div style="background:rgba(201,149,74,0.08);border:1px solid rgba(201,149,74,0.25);
+      border-radius:12px;padding:12px 14px;">
+      <div style="font-family:'Jost',sans-serif;font-size:0.8rem;color:#b8aa88;
+        line-height:1.8;text-align:center">
+        <span style="color:#c9954a;font-size:1rem">1.</span> Toca
+        <span style="display:inline-flex;align-items:center;gap:3px;
+          background:rgba(201,149,74,0.15);border-radius:6px;padding:1px 7px;
+          color:#e8c07a;font-weight:500">
+          ⬆️ Compartir
+        </span>
+        &nbsp;<span style="color:#c9954a;font-size:1rem">2.</span> Selecciona
+        <span style="display:inline-flex;align-items:center;gap:3px;
+          background:rgba(201,149,74,0.15);border-radius:6px;padding:1px 7px;
+          color:#e8c07a;font-weight:500">
+          ＋ Añadir a inicio
+        </span>
+        &nbsp;<span style="color:#c9954a;font-size:1rem">3.</span> Toca
+        <span style="color:#e8c07a;font-weight:500">Añadir</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mostrar banner solo en iPhone/iPad con Safari
+    (function(){
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
+      var isStandalone = window.navigator.standalone === true;
+      if(isIOS && isSafari && !isStandalone){
+        // Mostrar después de 2 segundos
+        setTimeout(function(){
+          document.getElementById('ios-banner').style.display = 'block';
+        }, 2000);
+      }
+    })();
+  </script>
+
 </body>
 </html>

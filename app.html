@@ -435,5 +435,43 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
+  <!-- Banner iOS Install -->
+  <div id="ios-banner" style="display:none;position:fixed;bottom:80px;left:0;right:0;z-index:9999;
+    padding:0 12px;">
+    <div style="background:linear-gradient(135deg,#0f1a0f,#162416);
+      border:1px solid rgba(201,149,74,0.4);border-radius:16px;
+      padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.5);
+      max-width:480px;margin:0 auto;position:relative;">
+      <button onclick="document.getElementById('ios-banner').style.display='none'"
+        style="position:absolute;top:8px;right:12px;background:none;border:none;
+        color:rgba(201,149,74,0.6);font-size:1.1rem;cursor:pointer">✕</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <img src="icon-192.png" style="width:36px;height:36px;border-radius:8px;flex-shrink:0"/>
+        <div style="font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;
+          color:#f0e8d5">Instalar Botanica · Sin App Store</div>
+      </div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#b5a98a;
+        line-height:1.9;text-align:center;
+        background:rgba(201,149,74,0.07);border-radius:10px;padding:10px">
+        <span style="color:#c9954a">1.</span> Toca
+        <span style="background:rgba(201,149,74,0.15);border-radius:5px;padding:1px 6px;color:#e8b96a;font-weight:500">⬆️ Compartir</span>
+        &nbsp;<span style="color:#c9954a">2.</span>
+        <span style="background:rgba(201,149,74,0.15);border-radius:5px;padding:1px 6px;color:#e8b96a;font-weight:500">＋ Añadir a inicio</span>
+        &nbsp;<span style="color:#c9954a">3.</span>
+        <span style="color:#e8b96a;font-weight:500">Añadir</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
+      if(isIOS && isSafari && !window.navigator.standalone){
+        setTimeout(function(){ document.getElementById('ios-banner').style.display='block'; }, 2500);
+      }
+    })();
+  </script>
+
 </body>
 </html>
