@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#c9954a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Botanica" />
+<title>Botanica · Guía Natural</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f1a0f;--surf:#162416;--gold:#c9954a;--gold-lt:#e8b96a;--cream:#f0e8d5;--cdim:#b5a98a;--green:#4a8c5c;--fd:'Playfair Display',Georgia,serif;--fu:'DM Sans',sans-serif}
+html,body{background:var(--bg);color:var(--cream);font-family:var(--fu);min-height:100%;overflow-x:hidden;padding-bottom:80px}
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:rgba(15,26,15,0.96);border-bottom:1px solid rgba(201,149,74,0.2);backdrop-filter:blur(12px)}
+.nav-logo{font-family:var(--fd);font-size:1.3rem;font-style:italic;color:var(--gold)}
+.nav-logo span{display:block;font-family:var(--fu);font-style:normal;font-weight:300;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cdim);margin-top:-3px}
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;display:flex;background:rgba(15,26,15,0.97);border-top:1px solid rgba(201,149,74,0.25);backdrop-filter:blur(16px)}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 14px;border:none;background:transparent;cursor:pointer;gap:4px;position:relative}
+.btab::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));border-radius:0 0 2px 2px;transition:width .25s}
+.btab.active::before{width:60%}
+.btab-i{font-size:1.3rem;transition:transform .2s}
+.btab.active .btab-i{transform:scale(1.15)}
+.btab-l{font-size:0.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--cdim);transition:color .2s}
+.btab.active .btab-l{color:var(--gold)}
+.pg{display:none;position:relative;z-index:1}
+.pg.on{display:block}
+.sec{padding:20px 18px}
+.stitle{font-family:var(--fd);font-size:1.35rem;color:var(--cream)}
+.stitle em{color:var(--gold);font-style:italic}
+.div{height:1px;background:linear-gradient(to right,transparent,rgba(201,149,74,.3),transparent);margin:8px 0 22px}
+.bp{width:100%;padding:15px;background:linear-gradient(135deg,#d4a050,#f0c878,#c9954a);color:#0f1a0f;font-family:var(--fu);font-size:.9rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 18px rgba(201,149,74,.3);transition:all .2s}
+.bp:active{opacity:.85}
+.bp:disabled{opacity:.35;cursor:not-allowed}
+.bo{padding:11px 22px;background:rgba(201,149,74,.06);color:var(--gold);font-family:var(--fu);font-size:.84rem;font-weight:600;border:1.5px solid rgba(201,149,74,.55);border-radius:12px;cursor:pointer;transition:all .2s}
+.bo:active{background:rgba(201,149,74,.15)}
+.bg{padding:10px 18px;background:rgba(201,149,74,.1);color:var(--cdim);font-family:var(--fu);font-size:.82rem;border:1px solid rgba(201,149,74,.22);border-radius:12px;cursor:pointer}
+.cg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.chip{padding:6px 14px;border-radius:20px;font-size:.78rem;cursor:pointer;border:1px solid rgba(201,149,74,.25);color:var(--cdim);background:transparent;transition:all .18s;font-family:var(--fu)}
+.sg{background:rgba(74,160,100,.18);border-color:#5cb870;color:#7dd68e}
+.so{background:rgba(201,149,74,.2);border-color:var(--gold);color:var(--gold)}
+.cfb{font-size:.74rem;color:#7dd68e;min-height:18px;margin-top:4px}
+.fr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.fp{padding:5px 12px;border-radius:16px;font-size:.72rem;cursor:pointer;border:1px solid rgba(201,149,74,.2);color:var(--cdim);background:transparent;font-family:var(--fu)}
+.fp.on{background:rgba(201,149,74,.15);border-color:var(--gold);color:var(--gold)}
+.sw{position:relative;margin-bottom:18px}
+.si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--cdim)}
+.sinp{width:100%;padding:12px 16px 12px 44px;background:var(--surf);border:1px solid rgba(201,149,74,.2);border-radius:12px;color:var(--cream);font-family:var(--fu);font-size:.88rem;outline:none}
+.sinp::placeholder{color:var(--cdim)}
+.cg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pc{background:var(--surf);border:1px solid rgba(201,149,74,.15);border-radius:14px;padding:16px 12px 12px;cursor:pointer;position:relative}
+.pc-e{font-size:1.9rem;margin-bottom:9px}
+.pc-t{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.pc-n{font-family:var(--fd);font-size:.92rem;color:var(--cream);margin-bottom:6px;line-height:1.3}
+.pc-tags{display:flex;flex-wrap:wrap;gap:4px}
+.pc-tag{padding:2px 7px;background:rgba(74,140,92,.15);border-radius:8px;font-size:.62rem;color:var(--green)}
+.fb{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:.9rem}
+.rc{background:var(--surf);border:1px solid rgba(201,149,74,.2);border-radius:16px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.rc.mat{background:linear-gradient(135deg,rgba(74,140,92,.1),rgba(201,149,74,.06));border-color:rgba(74,160,92,.4)}
+.rc-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rc-n{font-family:var(--fd);font-size:1rem;color:var(--cream);line-height:1.2;margin-bottom:3px}
+.rc-d{font-size:.83rem;color:var(--cdim);line-height:1.6;margin:0}
+.rc-f{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.rc-t{font-size:.72rem;color:var(--cdim);opacity:.7}
+.bge{padding:1px 7px;border-radius:8px;font-size:.6rem}
+.bm{background:rgba(74,160,92,.18);color:#7dd68e}
+.bc1{background:rgba(100,160,220,.15);color:#8bbfe8}
+.bc2{background:rgba(100,200,130,.15);color:#6dbf82}
+.bc3{background:rgba(180,140,220,.15);color:#c49ee8}
+.bp2{background:rgba(201,149,74,.15);color:var(--gold)}
+.rl{background:linear-gradient(135deg,rgba(201,149,74,.08),rgba(15,26,15,.4));border:1px solid rgba(201,149,74,.35);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.rl-b{padding:16px 18px 10px}
+.rl-fd{position:relative;max-height:38px;overflow:hidden}
+.rl-fd::after{content:'';position:absolute;bottom:0;left:0;right:0;height:28px;background:linear-gradient(transparent,rgba(15,26,15,.95))}
+.rl-i{margin-top:10px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:8px;filter:blur(3.5px);user-select:none;pointer-events:none}
+.rl-f{padding:0 18px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lm{font-size:.75rem;color:var(--cdim);opacity:.8}
+.pf{background:var(--surf);border:1px solid rgba(201,149,74,.25);border-radius:16px;padding:24px;max-width:560px;margin:0 auto 32px}
+.pft{font-family:var(--fd);font-size:1.1rem;color:var(--gold);margin-bottom:6px}
+.pfs{font-size:.78rem;color:var(--cdim);margin-bottom:20px}
+.pfl{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cdim);margin-bottom:10px}
+.pfsec{margin-bottom:18px}
+.mb{background:linear-gradient(135deg,rgba(74,140,92,.12),rgba(201,149,74,.08));border:1px solid rgba(74,140,92,.3);border-radius:14px;padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.em{text-align:center;padding:40px 20px;color:var(--cdim);font-size:.88rem}
+.em-i{font-size:2.4rem;margin-bottom:12px}
+.pt{background:linear-gradient(135deg,rgba(201,149,74,.1),rgba(15,26,15,0));border:1px solid rgba(201,149,74,.3);border-radius:16px;padding:22px 20px;margin:16px 18px;position:relative}
+.pt::before{content:'PRO';position:absolute;top:14px;right:14px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:#0f1a0f;font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.1em}
+.ptl{font-family:var(--fd);font-size:1.08rem;color:var(--cream);margin-bottom:6px}
+.ptfl{list-style:none;margin:10px 0 14px}
+.ptfl li{font-size:.8rem;color:var(--cdim);padding:4px 0;display:flex;align-items:center;gap:8px}
+.ptfl li::before{content:'✦';color:var(--gold);font-size:.6rem}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+.dp{background:var(--surf);border:1px solid rgba(201,149,74,.3);border-radius:22px 22px 0 0;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:24px 22px 32px;animation:su .3s cubic-bezier(.16,1,.3,1)}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.dh{width:40px;height:4px;background:rgba(201,149,74,.3);border-radius:2px;margin:0 auto 18px}
+.dhr{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.de{font-size:2.8rem}
+.dt{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.dn{font-family:var(--fd);font-size:1.5rem;color:var(--cream);line-height:1.2}
+.dl{font-family:var(--fd);font-size:.88rem;font-style:italic;color:var(--cdim)}
+.ds{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:18px 0 10px}
+.dtx{font-size:.95rem;color:var(--cdim);line-height:1.7}
+.bl{list-style:none}
+.bl li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.92rem;color:var(--cdim);display:flex;align-items:center;gap:8px}
+.bl li::before{content:'◆';color:var(--gold);font-size:.5rem}
+.sk{background:rgba(255,255,255,.03);border:1px solid rgba(201,149,74,.12);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.sn{width:26px;height:26px;border-radius:50%;background:rgba(201,149,74,.2);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--gold);flex-shrink:0;font-weight:500}
+.st{font-size:.92rem;color:var(--cdim);line-height:1.6;padding-top:2px}
+.wb{background:rgba(140,74,74,.12);border:1px solid rgba(140,74,74,.35);border-radius:10px;padding:10px 14px;margin:16px 0 4px;font-size:.8rem;color:#e8a0a0;line-height:1.5}
+.szt{display:flex;gap:8px;margin-bottom:14px}
+.szb{padding:6px 16px;border-radius:20px;font-size:.78rem;cursor:pointer;border:1px solid rgba(201,149,74,.3);color:var(--cdim);background:transparent;font-family:var(--fu)}
+.szb.on{background:rgba(201,149,74,.2);border-color:var(--gold);color:var(--gold)}
+.ac{background:linear-gradient(135deg,rgba(74,140,92,.08),rgba(201,149,74,.08));border:1px solid rgba(201,149,74,.3);border-radius:16px;padding:22px;margin:20px 18px}
+.ah{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ai{width:32px;height:32px;background:rgba(201,149,74,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.at{font-family:var(--fd);font-size:1rem;color:var(--cream)}
+.as{font-size:.73rem;color:var(--cdim)}
+.ao{font-size:.92rem;color:var(--cdim);line-height:1.7;white-space:pre-wrap}
+.al{display:flex;align-items:center;gap:8px;color:var(--cdim);font-size:.85rem}
+.dot{display:inline-block;animation:bk 1.4s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bk{0%,80%,100%{opacity:0}40%{opacity:1}}
+.aw{max-width:420px;margin:0 auto;padding:32px 20px}
+.ac2{background:var(--surf);border:1px solid rgba(201,149,74,.25);border-radius:20px;padding:28px 24px}
+.atabs{display:flex;background:rgba(255,255,255,.04);border-radius:10px;padding:3px;margin-bottom:22px}
+.atab{flex:1;padding:8px;border:none;background:transparent;border-radius:8px;font-size:.82rem;color:var(--cdim);cursor:pointer;font-family:var(--fu)}
+.atab.on{background:rgba(201,149,74,.18);color:var(--gold)}
+.af{margin-bottom:14px}
+.al2{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cdim);margin-bottom:6px;display:block}
+.ainp{width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(201,149,74,.2);border-radius:10px;color:var(--cream);font-family:var(--fu);font-size:.9rem;outline:none}
+.ainp::placeholder{color:rgba(181,169,138,.5)}
+.pc2{display:flex;align-items:flex-start;gap:10px;margin:16px 0 20px}
+.pcb{width:18px;height:18px;min-width:18px;accent-color:var(--gold);cursor:pointer;margin-top:2px}
+.pt2{font-size:.8rem;color:var(--cdim);line-height:1.5}
+.pl{color:var(--gold);cursor:pointer;text-decoration:underline}
+.ae{background:rgba(140,74,74,.12);border:1px solid rgba(140,74,74,.35);border-radius:8px;padding:9px 12px;font-size:.8rem;color:#e8a0a0;margin-bottom:14px}
+.ub{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid rgba(201,149,74,.2);border-radius:14px;padding:14px 16px;margin-bottom:22px}
+.uav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),#3a7a4c);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.un{font-family:var(--fd);font-size:1rem;color:var(--cream)}
+.ue{font-size:.75rem;color:var(--cdim)}
+.fvb{background:none;border:none;cursor:pointer;font-size:1.05rem;padding:4px;flex-shrink:0}
+.db{background:rgba(140,74,74,.1);border-bottom:1px solid rgba(140,74,74,.2)}
+.dbtn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:9px 18px;background:transparent;border:none;cursor:pointer;gap:8px}
+.dtxt{font-size:.75rem;color:#e8a0a0;display:flex;align-items:center;gap:6px;text-align:left}
+.dbdy{padding:0 18px 14px;font-size:.78rem;color:rgba(232,160,160,.85);line-height:1.7;display:none}
+.dbdy.on{display:block}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px}
+.mb2{background:var(--surf);border:1px solid rgba(201,149,74,.3);border-radius:18px;padding:26px 22px;max-width:420px;width:100%;max-height:80vh;overflow-y:auto}
+.mt{font-family:var(--fd);font-size:1.15rem;color:var(--gold);margin-bottom:14px}
+.mbdy{font-size:.84rem;color:var(--cdim);line-height:1.75}
+.mbdy strong{color:var(--cream)}
+.hero{padding:40px 20px 28px;text-align:center;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center,rgba(74,140,92,.15) 0%,transparent 70%);pointer-events:none}
+.hey{font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.ht{font-family:var(--fd);font-size:clamp(1.8rem,5vw,3.2rem);line-height:1.15;color:var(--cream);margin-bottom:8px}
+.ht em{color:var(--gold);font-style:italic}
+.hs{font-size:1rem;color:var(--cdim);max-width:480px;margin:0 auto 28px;line-height:1.6}
+.ib{border-radius:14px;padding:16px 18px}
+.ibl{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.ib p{font-size:.82rem;color:var(--cdim);line-height:1.7;margin:0}
+.aip{background:rgba(74,140,92,.08);border:1px solid rgba(74,140,92,.25);border-radius:14px;padding:18px;max-width:560px;margin:0 auto 20px;text-align:left;display:none}
+.aip.on{display:block}
+.aip p{font-size:.83rem;color:var(--cdim);line-height:1.75;margin:0}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(201,149,74,.3);border-radius:3px}
+@media(max-width:480px){.sec{padding:18px 14px}.cg2{grid-template-columns:repeat(2,1fr)}}
+
+.nav-back{font-family:var(--fu);font-size:.75rem;color:var(--cdim);text-decoration:none;letter-spacing:.06em;opacity:.7;transition:opacity .2s;white-space:nowrap}
+.nav-back:hover{opacity:1;color:var(--gold)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="index.html" class="nav-back">← Inicio</a><div class="nav-logo">Botanica<span>Guía Natural</span></div></nav>
+<div id="pi" class="pg on"></div>
+<div id="pc" class="pg"></div>
+<div id="pr" class="pg"></div>
+<div id="pia" class="pg"></div>
+<div id="pm" class="pg"></div>
+<nav class="bnav">
+  <button class="btab active" data-t="i" onclick="go('i')"><span class="btab-i">🌿</span><span class="btab-l">Inicio</span></button>
+  <button class="btab" data-t="c" onclick="go('c')"><span class="btab-i">📚</span><span class="btab-l">Catálogo</span></button>
+  <button class="btab" data-t="r" onclick="go('r')"><span class="btab-i">🧴</span><span class="btab-l">Ideas</span></button>
+  <button class="btab" data-t="a" onclick="go('a')"><span class="btab-i">✨</span><span class="btab-l">Ideas IA</span></button>
+  <button class="btab" data-t="m" onclick="go('m')"><span class="btab-i">👤</span><span class="btab-l">Mi Área</span></button>
+</nav>
+<div id="ov" class="ov" style="display:none" onclick="clov(event)">
+  <div class="dp" onclick="event.stopPropagation()">
+    <div class="dh"></div>
+    <div id="dc"></div>
+  </div>
+</div>
+<div id="pmod" class="mo" style="display:none" onclick="cpmod()">
+  <div class="mb2" onclick="event.stopPropagation()">
+    <div class="mt">🌿 Política de Privacidad</div>
+    <div class="mbdy">
+      <p>Nuestra política de privacidad recoge <strong>únicamente el correo electrónico del usuario</strong> con el fin de permitir el acceso a la aplicación.</p><br>
+      <p>El usuario puede solicitar en cualquier momento la <strong>eliminación de su cuenta y sus datos</strong> contactando con nosotros.</p><br>
+      <p>Nos comprometemos a <strong>proteger la información del usuario</strong> y a utilizarla únicamente para los fines descritos.</p><br>
+      <p><strong>Recopilación de datos:</strong> Solo el correo electrónico. No se comparte con terceros.</p>
+    </div>
+    <button class="bp" style="margin-top:22px" onclick="cpmod()">Entendido ✓</button>
+  </div>
+</div>
+<script>
+var PRODS=[
+{id:1,type:"Planta",emoji:"🌿",name:"Manzanilla",latin:"Matricaria chamomilla",tags:["inflamación","digestión","piel sensible"],desc:"Planta milenaria con propiedades antiinflamatorias y calmantes. Ideal para pieles sensibles, problemas digestivos y ansiedad leve.",benefits:["Calma irritación cutánea","Alivia el estrés y ansiedad","Mejora la digestión","Combate el insomnio leve","Antiinflamatoria natural"],concerns:["sensible","seca","enrojecida","estrés","digestión"]},
+{id:2,type:"Planta",emoji:"🌱",name:"Aloe Vera",latin:"Aloe barbadensis",tags:["hidratación","quemaduras","acné"],desc:"Gel regenerador y calmante. Perfecto para quemaduras solares, acné, piel seca y cicatrices.",benefits:["Hidratación profunda","Cicatrización acelerada","Reduce el acné","Alivia quemaduras solares","Efecto antienvejecimiento"],concerns:["seca","acné","quemada","mixta","cicatrices"]},
+{id:3,type:"Planta",emoji:"🌸",name:"Lavanda",latin:"Lavandula angustifolia",tags:["relajante","insomnio","piel grasa"],desc:"Flor aromática con propiedades relajantes, antisépticas y equilibrantes.",benefits:["Reduce el insomnio","Equilibra la piel grasa","Antiséptico natural","Alivia dolores de cabeza","Calma eczema y psoriasis"],concerns:["grasa","acné","insomnio","estrés","sensible"]},
+{id:4,type:"Aceite Esencial",emoji:"🫒",name:"Árbol de Té",latin:"Melaleuca alternifolia",tags:["antimicrobiano","acné","hongos"],desc:"Poderoso aceite antimicrobiano y antifúngico. Ideal para tratar acné, hongos y caspa.",benefits:["Combate bacterias y hongos","Reduce el acné severo","Trata la caspa","Desinfecta heridas","Ayuda a combatir hongos en uñas"],concerns:["acné","grasa","hongos","caspa","infección"]},
+{id:5,type:"Aceite Esencial",emoji:"🌹",name:"Rosa Mosqueta",latin:"Rosa rubiginosa",tags:["antienvejecimiento","cicatrices","manchas"],desc:"Aceite regenerador rico en vitamina C natural. Reduce manchas, cicatrices y arrugas.",benefits:["Puede mejorar el aspecto de manchas","Estimula el colágeno","Rica en vitamina C","Anti-arrugas potente","Nutre la piel madura"],concerns:["manchas","envejecimiento","cicatrices","seca","madura"]},
+{id:6,type:"Planta",emoji:"🌻",name:"Caléndula",latin:"Calendula officinalis",tags:["cicatrizante","antiinflamatoria","bebés"],desc:"Flor cicatrizante y calmante por excelencia. Segura incluso para pieles de bebés.",benefits:["Cicatriza heridas rápidamente","Alivia dermatitis y eccema","Ultra suave para pieles delicadas","Antiinflamatoria tópica","Regenera tejidos dañados"],concerns:["seca","sensible","eccema","dermatitis","cicatrices"]},
+{id:7,type:"Aceite Esencial",emoji:"🍋",name:"Limón",latin:"Citrus limon",tags:["manchas","purificante","energizante"],desc:"Aceite cítrico clarificante y antimicrobiano. Ilumina la piel y purifica.",benefits:["Aclara manchas superficiales","Purifica poros congestionados","Energizante en aromaterapia","Desengrasante natural","Potente antimicrobiano"],concerns:["manchas","grasa","acné","opaca","energía"]},
+{id:8,type:"Planta",emoji:"🍃",name:"Menta",latin:"Mentha piperita",tags:["digestión","energía","cefáleas"],desc:"Planta refrescante con mentol que activa la circulación y mejora la digestión.",benefits:["Alivia migrañas y cefáleas","Mejora la digestión","Refrescante y energizante","Activa la circulación","Repelente natural de insectos"],concerns:["digestión","dolor de cabeza","energía","circulación","grasa"]}
+];
+var RECS=[
+{id:1,emoji:"🧴",name:"Tónico Calmante de Manzanilla",desc:"Ayuda a mejorar la apariencia de la piel sensible y enrojecida. Con uso frecuente puede reducir la sensación de irritación.",time:"10 min",skin:["sensible","seca","enrojecida"],concern:["inflamación","enrojecimiento"],i50:["45ml de agua floral de manzanilla","4ml de aloe vera puro","2 gotas aceite esencial de lavanda","2 gotas aceite de rosa mosqueta"],i100:["90ml de agua floral de manzanilla","8ml de aloe vera puro","3 gotas aceite esencial de lavanda","4 gotas aceite de rosa mosqueta"],ings:["45ml de agua floral de manzanilla","4ml de aloe vera puro","2 gotas aceite esencial de lavanda","2 gotas aceite de rosa mosqueta"],steps:["Mezcla el agua de manzanilla con el aloe vera en un atomizador limpio.","Añade las gotas de aceite de lavanda. Agita bien 30 segundos.","Incorpora el aceite de rosa mosqueta y vuelve a agitar.","Aplica en rostro limpio con movimientos circulares suaves.","Refrigera hasta 2 semanas. Agitar antes de cada uso."]},
+{id:2,emoji:"✨",name:"Mascarilla Anti-Acné de Árbol de Té",desc:"Ayuda a mejorar la apariencia de la piel grasa. Con uso frecuente puede contribuir a disminuir la visibilidad de los brotes.",time:"25 min",skin:["grasa","mixta","acné"],concern:["acné","poros abiertos","brotes"],i50:["30g de arcilla verde","3 gotas aceite de árbol de té","15ml de gel de aloe vera","Agua de rosas c/n hasta 50ml"],i100:["60g de arcilla verde","6 gotas aceite de árbol de té","30ml de gel de aloe vera","Agua de rosas c/n hasta 100ml"],ings:["30g de arcilla verde","3 gotas aceite de árbol de té","15ml de gel de aloe vera","Agua de rosas c/n"],steps:["Mezcla la arcilla verde con aloe vera hasta obtener una pasta homogénea.","Agrega el aceite de árbol de té. Mezcla bien.","Añade agua de rosas gota a gota hasta lograr consistencia aplicable.","Aplica en rostro limpio evitando contorno de ojos y labios.","Deja actuar 15-20 minutos. Retira con agua tibia y termina con fría."]},
+{id:3,emoji:"🌹",name:"Serum Regenerador de Rosa Mosqueta",desc:"Ayuda a mejorar la apariencia de manchas y cicatrices. Con uso nocturno frecuente puede disminuir su visibilidad de forma progresiva.",time:"5 min",skin:["seca","madura","manchas"],concern:["manchas","cicatrices","envejecimiento"],i50:["46ml de aceite de rosa mosqueta","2 gotas aceite esencial de limón","2 gotas aceite de lavanda","2ml de vitamina E líquida"],i100:["92ml de aceite de rosa mosqueta","4 gotas aceite esencial de limón","4 gotas aceite de lavanda","4ml de vitamina E líquida"],ings:["46ml de aceite de rosa mosqueta","2 gotas aceite esencial de limón","2 gotas aceite de lavanda","2ml de vitamina E líquida"],steps:["Combina el aceite de rosa mosqueta con la vitamina E en un gotero oscuro.","Añade el aceite de limón (solo uso nocturno).","Incorpora el aceite de lavanda. Cierra y agita suavemente.","Aplica 3-4 gotas en cara limpia cada noche con masaje circular ascendente.","Deja absorber 5 minutos antes de aplicar crema hidratante."]},
+{id:4,emoji:"🌿",name:"Bálsamo Cicatrizante de Caléndula",desc:"Ayuda a mejorar la apariencia de zonas irritadas y piel seca. Con uso frecuente puede disminuir la incomodidad del eccema leve.",time:"30 min",skin:["sensible","seca","eccema"],concern:["eccema","cicatrices","irritación"],pro:true,ings:["7g de cera de abeja","35ml de aceite de caléndula infusionado","5g de manteca de karité","2 gotas aceite esencial de manzanilla"],i50:["7g de cera de abeja","35ml de aceite de caléndula","5g de manteca de karité","2 gotas aceite esencial de manzanilla"],i100:["15g de cera de abeja","70ml de aceite de caléndula","10g de manteca de karité","5 gotas aceite esencial de manzanilla"],steps:["Derrite la cera de abeja en baño maría a fuego bajo.","Agrega el aceite de caléndula y la manteca de karité. Mezcla bien.","Retira del fuego y espera 1 minuto antes de añadir los aceites esenciales.","Vierte en envases de vidrio o aluminio. No mover hasta solidificar.","Listo en 20-30 minutos a temperatura ambiente."]},
+{id:5,emoji:"🌼",name:"Tónico Calmante de Manzanilla y Aloe",desc:"Ayuda a mejorar la apariencia de la piel con rosácea. Con uso frecuente puede disminuir la visibilidad de las rojeces.",time:"10 min",skin:["sensible","enrojecida","rosácea"],concern:["rosácea","enrojecimiento","inflamación"],warn:"⚠️ Evita aplicar si tienes heridas abiertas. Agita siempre antes de usar.",i50:["40ml de infusión concentrada de manzanilla","8ml de gel de aloe vera","2 gotas aceite esencial de lavanda","2ml de agua floral de rosa"],i100:["80ml de infusión concentrada de manzanilla","15ml de gel de aloe vera","3 gotas aceite esencial de lavanda","4ml de agua floral de rosa"],ings:["40ml de infusión concentrada de manzanilla","8ml de gel de aloe vera puro","2 gotas aceite esencial de lavanda","2ml de agua floral de rosa"],steps:["Prepara una infusión doble de manzanilla. Deja enfriar completamente.","Vierte la infusión fría en un atomizador de vidrio limpio.","Agrega el gel de aloe vera. Agita enérgicamente 30 segundos.","Añade las gotas de lavanda y el agua floral. Agita de nuevo.","Aplica sobre rostro limpio con movimientos suaves. Refrigera hasta 10 días."]},
+{id:6,emoji:"🥣",name:"Mascarilla Anti-Rojeces de Avena y Caléndula",desc:"Ayuda a mejorar la apariencia de la piel sensible e inflamada. Con uso frecuente puede disminuir el enrojecimiento visible.",time:"25 min",skin:["sensible","rosácea","seca"],concern:["rosácea","inflamación","enrojecimiento"],warn:"⚠️ Usa solo avena coloidal (muy fina). No masajees al aplicar ni al retirar.",i50:["25g de avena coloidal molida","10ml de aceite de caléndula","8g de miel cruda","Agua floral de manzanilla c/n"],i100:["50g de avena coloidal molida","20ml de aceite de caléndula","15g de miel cruda","Agua floral de manzanilla c/n"],ings:["25g de avena coloidal molida","10ml de aceite de caléndula","8g de miel cruda orgánica","Agua floral de manzanilla c/n"],steps:["Muele la avena en procesador hasta obtener polvo muy fino.","Mezcla la avena con el aceite de caléndula hasta integrar.","Añade la miel cruda. Mezcla bien con espátula limpia.","Agrega agua floral de manzanilla hasta obtener una pasta suave aplicable.","Aplica con toques suaves. Deja 10-15 minutos. Retira con agua tibia y gasas suaves."]},
+{id:7,emoji:"💧",name:"Sérum Nocturno SOS de Rosa Mosqueta",desc:"Ayuda a mejorar la apariencia de la piel con rosácea. Con uso frecuente puede disminuir el enrojecimiento crónico.",time:"5 min",skin:["sensible","rosácea","madura"],concern:["rosácea","enrojecimiento","cicatrices"],warn:"⚠️ Solo uso nocturno. Omite el aceite de limón si tu piel es muy reactiva.",i50:["23ml de aceite de rosa mosqueta","23ml de aceite de semilla de frambuesa","3ml de vitamina E","2 gotas aceite esencial de manzanilla","1 gota aceite esencial de lavanda"],i100:["46ml de aceite de rosa mosqueta","46ml de aceite de semilla de frambuesa","6ml de vitamina E","4 gotas aceite esencial de manzanilla","2 gotas aceite esencial de lavanda"],ings:["23ml de aceite de rosa mosqueta","23ml de aceite de semilla de frambuesa","3ml de vitamina E líquida","2 gotas aceite esencial de manzanilla romana","1 gota aceite esencial de lavanda"],steps:["Mezcla el aceite de rosa mosqueta con el de semilla de frambuesa en un gotero oscuro.","Agrega la vitamina E líquida.","Añade las gotas de manzanilla romana y lavanda. Agita suavemente.","Cada noche, sobre rostro limpio y húmedo, aplica 3-4 gotas.","Deja absorber 5 minutos antes de aplicar crema hidratante."]},
+{id:8,emoji:"🌿",name:"Shampoo de Romero para la Caída del Cabello",desc:"Ayuda a mejorar el aspecto del cabello debilitado. Con uso frecuente puede contribuir a disminuir la caída.",time:"15 min",skin:["todo tipo de cabello"],concern:["caída del cabello","cabello débil"],cat:"Cabello",warn:"⚠️ Evita el contacto con ojos. Si sientes ardor fuerte, reduce el romero.",i50:["45ml de jabón de glicerina líquido","½ ramita de romero fresco","4 gotas aceite esencial de romero","2 gotas aceite esencial de lavanda","2ml de aceite de ricino"],i100:["90ml de jabón de glicerina líquido","1 ramita de romero fresco","8 gotas aceite esencial de romero","4 gotas aceite esencial de lavanda","4ml de aceite de ricino"],ings:["45ml de jabón de glicerina líquido neutro","½ ramita de romero fresco","4 gotas aceite esencial de romero","2 gotas aceite esencial de lavanda","2ml de aceite de ricino"],steps:["Prepara una infusión concentrada de romero: hierve con agua 10 minutos. Cuela y enfría.","En frasco dispensador, vierte el jabón de glicerina.","Agrega la infusión de romero fría. Mezcla suavemente.","Añade los aceites esenciales y el aceite de ricino. Integra con movimientos lentos.","Agita antes de cada uso. Aplica sobre cabello húmedo masajeando 2-3 minutos."]},
+{id:9,emoji:"🫚",name:"Agua Digestiva de Chía, Limón y Jengibre",desc:"Ayuda a mejorar el bienestar digestivo. Con uso frecuente puede contribuir a disminuir la inflamación intestinal.",time:"10 min",skin:["interno"],concern:["digestión","inflamación","estreñimiento"],cat:"Digestión",warn:"⚠️ Beber siempre con chía hidratada. No exceder 2 vasos al día.",i50:["250ml de agua filtrada","½ cda de semillas de chía","Jugo de ¼ limón","½ cm de jengibre rallado","½ cdta de miel cruda","Pizca de cúrcuma"],i100:["500ml de agua filtrada","1 cda de semillas de chía","Jugo de ½ limón","1 cm de jengibre rallado","1 cdta de miel cruda","Pizca generosa de cúrcuma"],ings:["250ml de agua filtrada","½ cda de semillas de chía","Jugo de ¼ limón","½ cm de jengibre fresco","½ cdta de miel cruda","Pizca de cúrcuma"],steps:["Remoja las semillas de chía en 4 cdas de agua por 10 minutos hasta que formen gel.","Ralla el jengibre y cuélalo para obtener su jugo.","En vaso grande, vierte el agua filtrada a temperatura ambiente.","Agrega el jugo de limón, el jengibre y la miel. Mezcla bien.","Incorpora la chía hidratada y la cúrcuma. Bebe de inmediato."]},
+{id:10,emoji:"🛁",name:"Baño Calmante de Avena y Caléndula",desc:"Ayuda a mejorar la apariencia y sensación de la piel con eccema. Con uso frecuente puede disminuir el picor.",time:"25 min",skin:["sensible","eccema","seca"],concern:["eccema","picor","inflamación"],cat:"Eccema",warn:"⚠️ Usar agua tibia, nunca caliente. No frotar al secarse.",i50:["50g de avena coloidal","250ml de infusión fuerte de caléndula","5 gotas aceite esencial de manzanilla","1 cda de aceite de coco (opcional)"],i100:["100g de avena coloidal","500ml de infusión fuerte de caléndula","10 gotas aceite esencial de manzanilla","2 cdas de aceite de coco (opcional)"],ings:["50g de avena coloidal","250ml de infusión fuerte de caléndula","5 gotas aceite esencial de manzanilla romana","1 cda de aceite de coco virgen"],steps:["Prepara la infusión de caléndula: 4 bolsitas en 1 taza de agua 15 minutos. Cuela.","Muele la avena muy fina y colócala en una bolsita de tela.","Llena la bañera con agua tibia. Vierte la infusión de caléndula.","Sumerge la bolsita de avena y exprímela hasta que el agua tome color lechoso.","Remoja 15-20 minutos. Sécate con toques suaves y aplica crema inmediatamente."]},
+{id:11,emoji:"🧈",name:"Crema Corporal de Karité y Lavanda",desc:"Ayuda a mejorar la hidratación de zonas con eccema. Con uso frecuente puede disminuir el picor.",time:"20 min",skin:["seca","eccema","sensible"],concern:["eccema","resequedad","picor"],cat:"Eccema",pro:true,warn:"⚠️ Usa karité sin refinar (crudo).",i50:["30g de manteca de karité sin refinar","10ml de aceite de coco virgen","8ml de aceite de caléndula","4 gotas aceite esencial de lavanda","2 gotas aceite esencial de manzanilla"],i100:["60g de manteca de karité sin refinar","20ml de aceite de coco virgen","15ml de aceite de caléndula","8 gotas aceite esencial de lavanda","4 gotas aceite esencial de manzanilla"],ings:["30g de manteca de karité sin refinar","10ml de aceite de coco virgen","8ml de aceite de caléndula infusionado","4 gotas aceite esencial de lavanda","2 gotas aceite esencial de manzanilla romana"],steps:["Ablanda el karité en baño maría a temperatura muy baja.","Bate el karité con movimientos envolventes hasta obtener textura cremosa (3-5 minutos).","Agrega el aceite de coco y el de caléndula poco a poco batiendo.","Añade las gotas de lavanda y manzanilla romana. Integra bien.","Transfiere a frasco de vidrio. Aplica en zonas con eccema después del baño."]},
+{id:12,emoji:"💧",name:"Aceite Calmante de Emergencia para Eccema",desc:"Ayuda a mejorar la apariencia de zonas con eccema activo. Puede contribuir a disminuir la sensación de picor.",time:"5 min",skin:["eccema","sensible","seca"],concern:["eccema","picor urgente","irritación"],cat:"Eccema",pro:true,warn:"⚠️ Si no consigues aceite de borraja, usa aceite de prímula. Evitar en embarazo.",i50:["30ml de aceite de semilla de borraja","18ml de aceite de rosa mosqueta","2ml de vitamina E","3 gotas aceite esencial de lavanda","1 gota aceite esencial de manzanilla"],i100:["60ml de aceite de semilla de borraja","36ml de aceite de rosa mosqueta","4ml de vitamina E","6 gotas aceite esencial de lavanda","2 gotas aceite esencial de manzanilla"],ings:["30ml de aceite de semilla de borraja","18ml de aceite de rosa mosqueta","2ml de vitamina E","3 gotas aceite esencial de lavanda","1 gota aceite esencial de manzanilla romana"],steps:["Mezcla el aceite de borraja con el de rosa mosqueta en frasco gotero oscuro.","Agrega la vitamina E y las gotas de lavanda y manzanilla romana. Agita suavemente.","Aplica 3-4 gotas sobre la zona afectada limpia y seca.","Extiende con movimientos de presión, sin frotar. Deja absorber.","Usar en brotes hasta 2 veces al día. Conservar hasta 2 meses."]},
+{id:13,emoji:"🍵",name:"Infusión Antiinflamatoria para Eccema",desc:"Ayuda a mejorar el bienestar desde el interior. Con uso frecuente puede contribuir a disminuir la inflamación.",time:"10 min",skin:["interno"],concern:["eccema","inflamación interna"],cat:"Eccema",pro:true,warn:"⚠️ La pimienta negra activa la cúrcuma. Consultar médico si tomas anticoagulantes.",i50:["250ml de agua caliente a 80°C","1 bolsita de manzanilla","¼ cdta de cúrcuma en polvo","Pizca de pimienta negra molida","½ cdta de miel cruda"],i100:["500ml de agua caliente a 80°C","2 bolsitas de manzanilla","½ cdta de cúrcuma en polvo","2 pizcas de pimienta negra","1 cdta de miel cruda"],ings:["250ml de agua caliente a 80°C","1 bolsita de manzanilla","¼ cdta de cúrcuma en polvo","Pizca de pimienta negra molida","½ cdta de miel cruda","1 rodaja de jengibre fresco (opcional)"],steps:["Calienta el agua hasta 80°C (no hirviendo para conservar propiedades).","Prepara la infusión de manzanilla: reposa 7 minutos tapado.","Retira la manzanilla. Agrega la cúrcuma y la pimienta negra. Mezcla bien.","Añade jengibre si deseas. Endulza con miel cruda.","Beber 1-2 tazas al día entre comidas."]}
+];
+var SKINS=["Seca","Grasa","Mixta","Sensible","Madura","Normal"];
+var CONS=["Acné","Manchas","Arrugas","Eccema","Rosácea","Cicatrices","Caída del cabello","Digestión","Cansancio","Insomnio","Estrés","Dolor de cabeza","Hongos"];
+var S={tab:'i',skins:[],cons:[],pdone:false,favs:[],srch:'',cf:'Todos',rf:'Todas',disc:false,ainf:false,user:null,amode:'registro',pacc:false,cdel:false,aout:'',aldo:false,atop:'',sz:50,aname:'',aemail:'',aerr:''};
+
+function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fv(id){return S.favs.indexOf(id)>-1}
+function tv(id){var i=S.favs.indexOf(id);if(i>-1)S.favs.splice(i,1);else S.favs.push(id);rdr()}
+function im(r){
+  var sl=S.skins.map(function(a){return a.toLowerCase()});
+  var cl=S.cons.map(function(a){return a.toLowerCase()});
+  var sm=r.skin.some(function(s){return sl.indexOf(s.toLowerCase())>-1});
+  var cm=r.concern.some(function(c){return cl.some(function(p){return c.toLowerCase().indexOf(p)>-1||p.indexOf(c.toLowerCase())>-1})});
+  return sm||cm
+}
+
+var PM={i:'pi',c:'pc',r:'pr',a:'pia',m:'pm'};
+function go(t){
+  S.tab=t;
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.btab').forEach(function(b){b.classList.remove('active')});
+  document.getElementById(PM[t]).classList.add('on');
+  document.querySelector('[data-t="'+t+'"]').classList.add('active');
+  rdr();window.scrollTo(0,0)
+}
+function rdr(){
+  var fn={i:ri,c:rcl,r:rr,a:ra,m:rm};
+  if(fn[S.tab])fn[S.tab]()
+}
+
+// INICIO
+function ri(){
+  var p=document.getElementById('pi');
+  var d='<div class="db"><button class="dbtn" onclick="S.disc=!S.disc;ri()"><span class="dtxt">⚠️ <strong>Esta app ofrece orientación y no sustituye el consejo médico profesional</strong></span><span style="color:#e8a0a0;font-size:.7rem">'+(S.disc?'▲':'▼')+'</span></button><div class="dbdy'+(S.disc?' on':'')+'">El contenido de esta guía no reemplaza el diagnóstico ni el tratamiento de un profesional. Ante cualquier duda o reacción, consulta con un especialista.<br><br><strong style="color:#e8a0a0">Recopilación de datos:</strong> Solo recogemos el correo electrónico para dar acceso al servicio. No se comparte con terceros.</div></div>';
+  var h='<div class="hero"><div class="hey">🌿 Tu guía personalizada</div><h1 class="ht">Ideas naturales<br>para <em>tu</em> piel y bienestar</h1><p class="hs">Descubre tips e ideas con plantas y aceites esenciales para el cuidado natural del día a día.</p>';
+  h+='<button class="bo" style="margin:0 auto 20px;display:block;padding:10px 28px;font-size:.85rem" onclick="S.ainf=!S.ainf;ri()">'+(S.ainf?'▲ Cerrar información':'🌿 ¿Qué hace esta app? ▼')+'</button>';
+  h+='<div class="aip'+(S.ainf?' on':'')+'"><p>Botanica es una <strong style="color:var(--cream)">guía práctica de cuidado natural</strong> con plantas y aceites esenciales para el uso diario.<br><br>🧴 <strong style="color:var(--cream)">Ideas paso a paso</strong> con cantidades exactas · 📚 <strong style="color:var(--cream)">Catálogo botánico</strong> · ✨ <strong style="color:var(--cream)">Asistente IA</strong> · ❤️ <strong style="color:var(--cream)">Favoritas personales</strong></p></div>';
+  h+='<div class="ib" style="background:rgba(201,149,74,.08);border:1px solid rgba(201,149,74,.25);max-width:560px;margin:0 auto 8px"><div class="ibl" style="color:var(--gold)">🖐 Prueba de alergia</div><p>Antes de aplicar cualquier producto, coloca una pequeña cantidad en la parte interna de la muñeca y espera <strong style="color:var(--cream)">24 horas</strong>. Si no aparece enrojecimiento ni picor, puedes aplicarlo con confianza.</p></div></div>';
+  var pr='';
+  if(!S.pdone){
+    var sc=SKINS.map(function(s){var sel=S.skins.indexOf(s)>-1;return'<button class="chip'+(sel?' sg':'')+'" onclick="tsk(\''+x(s)+'\')">'+(sel?'✓ ':'')+x(s)+'</button>'}).join('');
+    var cc=CONS.map(function(c){var sel=S.cons.indexOf(c)>-1;return'<button class="chip'+(sel?' so':'')+'" onclick="tco(\''+x(c)+'\')">'+(sel?'✓ ':'')+x(c)+'</button>'}).join('');
+    var sfb=S.skins.length?'<div class="cfb">✦ Piel '+x(S.skins.join(' · '))+' seleccionada</div>':'<div class="cfb"></div>';
+    var cfb=S.cons.length?'<div class="cfb">🌿 '+S.cons.length+' preocupación'+(S.cons.length>1?'es':'')+' añadida'+(S.cons.length>1?'s':'')+': '+x(S.cons.join(', '))+'</div>':'<div class="cfb"></div>';
+    var dis=(S.skins.length===0&&S.cons.length===0)?' disabled style="opacity:.4;cursor:not-allowed"':'';
+    pr='<div class="sec"><div class="pf"><div class="pft">✦ Tu Perfil Natural</div><div class="pfs">Personaliza tus recomendaciones (puedes cambiar esto después)</div><div class="pfsec"><div class="pfl">Tipo de Piel</div><div class="cg">'+sc+'</div>'+sfb+'</div><div class="pfsec"><div class="pfl">Mis Preocupaciones</div><div class="cg">'+cc+'</div>'+cfb+'</div><button class="bp"'+dis+' onclick="svp()">Ver mis ideas personalizadas →</button></div></div>'
+  } else {
+    pr='<div class="sec"><div class="mb"><div style="font-size:1.6rem">🎯</div><div><strong>Perfil: '+x(S.skins.join(', ')||'Sin especificar')+'</strong><br>Preocupaciones: '+x(S.cons.join(', ')||'—')+'<br><span style="font-size:.78rem;opacity:.7">Mostrando ideas adecuadas para ti</span></div><button class="bg" style="margin-left:auto;white-space:nowrap;font-size:.75rem;padding:6px 12px" onclick="S.pdone=false;ri()">Editar</button></div></div>'
+  }
+  var pt='<div class="pt"><div class="ptl">Desbloquea Botanica <em>Pro</em></div><ul class="ptfl"><li>Biblioteca de +200 plantas y aceites esenciales</li><li>Creador de ideas personalizadas con IA</li><li>Diario de rutina de cuidado personal</li><li>Consultas ilimitadas al asistente herborista</li><li>Descarga tus ideas en PDF</li></ul><button class="bp" style="margin-bottom:10px" onclick="go(\'m\')">🌿 Crear mi guía personalizada</button><button class="bg" style="width:100%;text-align:center" onclick="go(\'r\')">Explorar ideas →</button></div>';
+  p.innerHTML=d+h+pr+pt
+}
+function tsk(s){var i=S.skins.indexOf(s);if(i>-1)S.skins.splice(i,1);else S.skins.push(s);ri()}
+function tco(c){var i=S.cons.indexOf(c);if(i>-1)S.cons.splice(i,1);else S.cons.push(c);ri()}
+function svp(){if(S.skins.length||S.cons.length){S.pdone=true;ri()}}
+
+// CATÁLOGO
+function rcl(){
+  var p=document.getElementById('pc');
+  var fls=['Todos','Piel','Acné','Manchas','Rosácea','Eccema','Cabello','Digestión','Inflamación'];
+  var pills=fls.map(function(f){return'<button class="fp'+(S.cf===f?' on':'')+'" onclick="S.cf=\''+f+'\';rcl()">'+x(f)+'</button>'}).join('');
+  pills+='<button class="fp'+(S.cf==='Planta'?' on':'')+'" onclick="S.cf=\'Planta\';rcl()">🌿 Plantas</button>';
+  pills+='<button class="fp'+(S.cf==='Aceite'?' on':'')+'" onclick="S.cf=\'Aceite\';rcl()">💧 Aceites</button>';
+  var srch=S.srch.toLowerCase();
+  var fl=PRODS.filter(function(pr){
+    var ms=!srch||pr.name.toLowerCase().indexOf(srch)>-1||pr.tags.some(function(t){return t.indexOf(srch)>-1});
+    var mf=S.cf==='Todos'||pr.tags.some(function(t){return t.indexOf(S.cf.toLowerCase())>-1})||pr.type.indexOf(S.cf)>-1;
+    return ms&&mf
+  });
+  var cards=fl.length===0?'<div class="em"><div class="em-i">🔎</div>No se encontraron productos.</div>':
+    '<div class="cg2">'+fl.map(function(pr){return'<div class="pc" onclick="shp('+pr.id+')"><button class="fb" onclick="event.stopPropagation();tv('+pr.id+')">'+(fv(pr.id)?'❤️':'🤍')+'</button><div class="pc-e">'+pr.emoji+'</div><div class="pc-t">'+x(pr.type)+'</div><div class="pc-n">'+x(pr.name)+'</div><div class="pc-tags">'+pr.tags.slice(0,2).map(function(t){return'<span class="pc-tag">'+x(t)+'</span>'}).join('')+'</div></div>'}).join('')+'</div>';
+  p.innerHTML='<div class="sec"><h2 class="stitle" style="margin-bottom:16px">Catálogo <em>Botánico</em></h2><div class="div"></div><div class="sw"><span class="si">🔍</span><input class="sinp" placeholder="Buscar planta, aceite, síntoma..." value="'+x(S.srch)+'" oninput="S.srch=this.value;rcl()"/></div><div class="fr">'+pills+'</div>'+cards+'</div>'
+}
+
+// RECETAS
+function rr(){
+  var p=document.getElementById('pr');
+  var rfs=[{id:'Todas',l:'Todas'},{id:'Rosácea',l:'Rosácea'},{id:'Eccema',l:'Eccema'},{id:'Cabello',l:'Cabello'},{id:'Digestión',l:'Digestión'}];
+  if(S.pdone)rfs.splice(1,0,{id:'Mi piel',l:'✦ Para mi piel'});
+  var pills=rfs.map(function(f){return'<button class="fp'+(S.rf===f.id?' on':'')+'" onclick="S.rf=\''+f.id+'\';rr()">'+x(f.l)+'</button>'}).join('');
+  var list=RECS.filter(function(r){
+    if(S.rf==='Mi piel')return im(r);
+    if(S.rf==='Cabello')return r.cat==='Cabello';
+    if(S.rf==='Digestión')return r.cat==='Digestión';
+    if(S.rf==='Eccema')return r.cat==='Eccema';
+    if(S.rf==='Rosácea')return r.concern.some(function(c){return c.indexOf('rosácea')>-1||c.indexOf('enrojecimiento')>-1});
+    return true
+  });
+  if(S.pdone&&S.rf==='Todas'){list=list.filter(im).concat(list.filter(function(r){return!im(r)}))}
+  var prevM=false;
+  var cards=list.length===0?'<div class="em"><div class="em-i">🌱</div>No hay ideas para este filtro.<br><button class="bo" style="margin-top:14px" onclick="S.rf=\'Todas\';rr()">Ver todas →</button></div>':
+    (S.pdone&&S.rf==='Todas'&&list.some(im)?'<div style="font-family:var(--fu);font-size:.72rem;color:#7dd68e;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">✦ Sugeridas para tu perfil · '+x(S.skins.join(', '))+' · '+x(S.cons.join(', '))+'</div>':'')
+    +list.map(function(r,i){
+      var m=S.pdone&&im(r);
+      var dv=(S.pdone&&S.rf==='Todas'&&i>0&&!m&&prevM)?'<div style="font-family:var(--fu);font-size:.72rem;color:var(--cdim);letter-spacing:.1em;text-transform:uppercase;opacity:.5;padding:8px 0">─ Otras ideas</div>':'';
+      prevM=m;
+      return dv+(r.pro?rlk(r):rcd(r,m))
+    }).join('');
+  p.innerHTML='<div class="sec"><h2 class="stitle" style="margin-bottom:16px">Ideas & <em>Tips Naturales</em></h2><div class="div"></div><div class="fr">'+pills+'</div>'+cards+'</div>'
+}
+function rcd(r,m){
+  var cb='';if(r.cat){var cc=r.cat==='Cabello'?'bc1':r.cat==='Digestión'?'bc2':'bc3';var ci=r.cat==='Cabello'?'💇 Cabello':r.cat==='Digestión'?'🌱 Digestión':'🌼 Eccema';cb='<span class="bge '+cc+'">'+ci+'</span>'}
+  var mb=m?'<span class="bge bm">✦ Para tu piel</span>':'';
+  return'<div class="rc'+(m?' mat':'')+'">' +
+    '<div class="rc-h"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.6rem">'+r.emoji+'</span><div><div class="rc-n">'+x(r.name)+'</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px">'+mb+cb+'</div></div></div>' +
+    '<button class="fvb" onclick="tv('+r.id+')">'+(fv(r.id)?'❤️':'🤍')+'</button></div>' +
+    '<p class="rc-d">'+x(r.desc)+'</p>' +
+    '<div class="rc-f"><span class="rc-t">⏱ '+x(r.time)+'</span><button class="bo" style="padding:7px 18px;font-size:.8rem" onclick="shr('+r.id+')">Ver idea →</button></div></div>'
+}
+function rlk(r){
+  var is=r.ings.slice(0,3).map(function(i){return'<div style="font-family:var(--fu);font-size:.78rem;color:var(--cdim);padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05)">◆ '+x(i)+'</div>'}).join('');
+  return'<div class="rl"><div class="rl-b"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:1.6rem">'+r.emoji+'</span><div><div style="font-family:var(--fd);font-size:1rem;color:var(--cream);font-weight:600">'+x(r.name)+'</div><span class="bge bp2">✦ PRO</span></div></div><div class="rl-fd"><p style="font-family:var(--fu);font-size:.82rem;color:var(--cdim);line-height:1.6;margin:0">'+x(r.desc)+'</p></div><div class="rl-i"><div style="font-family:var(--fu);font-size:.7rem;color:var(--gold);margin-bottom:4px;letter-spacing:.1em;text-transform:uppercase">Ingredientes</div>'+is+'</div></div><div class="rl-f"><span class="lm">🔒 Desbloquea para ver la preparación completa</span><button class="bp" style="width:auto;padding:8px 16px;font-size:.78rem;flex-shrink:0" onclick="go(\'m\')">Desbloquear</button></div></div>'
+}
+
+// IDEAS IA
+function ra(){
+  var p=document.getElementById('pia');
+  var prs=[['Sugerencias para piel grasa con lavanda y árbol de té','💡 Tips para piel grasa'],['Sugiere 5 plantas naturales poco conocidas','🌿 Plantas nuevas para agregar'],['Dame ideas naturales para el cabello seco y con frizz','💇 Tips capilares naturales'],['Ideas naturales para eccema y dermatitis atópica','🌼 Tips para eccema'],['¿Qué aceites esenciales combinan bien con la manzanilla?','🫧 Combinaciones de aceites']];
+  var btns=prs.map(function(pr){return'<button class="bo" style="text-align:left;padding:12px 16px;width:100%" onclick="asi('+JSON.stringify(pr[0])+')">'+x(pr[1])+'</button>'}).join('');
+  var out=S.aldo?'<div class="al"><span>Consultando el grimorio natural</span><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>':S.aout?'<div class="ao">'+x(S.aout)+'</div>':'<div style="color:var(--cdim);font-size:.83rem;opacity:.6">Las respuestas aparecerán aquí ✨</div>';
+  p.innerHTML='<div class="sec"><h2 class="stitle" style="margin-bottom:6px">Asistente <em>Herborista</em></h2><p style="font-size:.83rem;color:var(--cdim);margin-bottom:18px">Pide sugerencias e ideas para agregar nuevas preparaciones a tu guía.</p><div class="div"></div><div style="display:flex;flex-direction:column;gap:8px">'+btns+'</div></div><div class="ac"><div class="ah"><div class="ai">🌿</div><div><div class="at">Asistente Botanica</div><div class="as">'+(S.atop||'Selecciona una opción arriba para comenzar')+'</div></div></div>'+out+'</div>'
+}
+function asi(t){
+  S.atop=t;S.aldo=true;S.aout='';ra();
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:'Eres una experta herborista y cosmetóloga natural. Responde siempre en español, de forma concisa y práctica. Sin introducciones largas.',messages:[{role:'user',content:t}]})})
+  .then(function(r){return r.json()})
+  .then(function(d){S.aout=(d.content||[]).map(function(b){return b.text||''}).join('')||'No se pudo obtener respuesta.';S.aldo=false;ra()})
+  .catch(function(){S.aout='⚠️ Error al conectar. Intenta de nuevo.';S.aldo=false;ra()})
+}
+
+// MI ÁREA
+function rm(){
+  var p=document.getElementById('pm');var h='<div class="aw">';
+  if(!S.user){
+    h+='<div style="text-align:center;margin-bottom:24px"><div style="font-size:2.4rem;margin-bottom:8px">🌿</div><div style="font-family:var(--fd);font-style:italic;font-size:1.5rem;color:var(--gold)">Botanica</div><div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cdim)">Tu área personal</div></div>';
+    h+='<div class="ac2"><div class="atabs"><button class="atab'+(S.amode==='registro'?' on':'')+'" onclick="S.amode=\'registro\';S.aerr=\'\';rm()">Crear cuenta</button><button class="atab'+(S.amode==='acceder'?' on':'')+'" onclick="S.amode=\'acceder\';S.aerr=\'\';rm()">Acceder</button></div>';
+    if(S.amode==='registro')h+='<div class="af"><label class="al2">Tu nombre</label><input class="ainp" id="an" placeholder="¿Cómo te llamamos?" value="'+x(S.aname||'')+'"/></div>';
+    h+='<div class="af"><label class="al2">Correo electrónico</label><input class="ainp" id="ae" type="email" placeholder="tu@correo.com" value="'+x(S.aemail||'')+'"/></div>';
+    if(S.amode==='registro')h+='<div class="pc2"><input type="checkbox" class="pcb" id="pcb"'+(S.pacc?' checked':'')+'><label for="pcb" class="pt2">He leído y acepto los términos de la <span class="pl" onclick="opmod()">política de privacidad</span></label></div>';
+    if(S.aerr)h+='<div class="ae">'+x(S.aerr)+'</div>';
+    h+='<button class="bp" onclick="sba()">'+(S.amode==='registro'?'Crear mi cuenta 🌿':'Acceder a mi área →')+'</button>';
+    h+='<p style="font-size:.74rem;color:var(--cdim);text-align:center;margin-top:14px;line-height:1.5">Solo usamos tu correo para darte acceso.<br>Nunca lo compartimos con terceros.</p></div>'
+  } else {
+    h+='<div class="ub"><div class="uav">🌿</div><div><div class="un">'+x(S.user.n)+'</div><div class="ue">'+x(S.user.e)+'</div></div><button class="bg" style="margin-left:auto;font-size:.75rem;padding:6px 12px" onclick="lgo()">Salir</button></div>';
+    var fvs=RECS.filter(function(r){return fv(r.id)});
+    h+='<div style="margin-bottom:8px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div class="stitle">❤️ Mis <em>Favoritas</em></div>'+(fvs.length>0?'<span style="background:rgba(201,149,74,.15);border-radius:20px;padding:2px 8px;font-size:.7rem;color:var(--gold)">'+fvs.length+'</span>':'')+'</div><div class="div"></div></div>';
+    if(fvs.length===0){h+='<div class="em"><div class="em-i">🤍</div><div>Aún no tienes ideas guardadas.</div><div style="margin-top:6px;opacity:.7">Toca el corazón 🤍 en cualquier idea para guardarla aquí.</div><button class="bo" style="margin-top:18px" onclick="go(\'r\')">Ver ideas →</button></div>'}
+    else{h+=fvs.map(function(r){return'<div class="rc" style="margin-bottom:12px"><div class="rc-h"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.6rem">'+r.emoji+'</span><div><div class="rc-n">'+x(r.name)+'</div></div></div><button class="fvb" onclick="tv('+r.id+');rm()">❤️</button></div><p class="rc-d">'+x(r.desc)+'</p><div class="rc-f"><span class="rc-t">⏱ '+x(r.time)+'</span><button class="bo" style="padding:7px 18px;font-size:.8rem" onclick="shr('+r.id+')">Ver idea →</button></div></div>'}).join('')}
+    h+='<div style="margin-top:32px;border-top:1px solid rgba(255,255,255,.07);padding-top:22px"><div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cdim);margin-bottom:12px;opacity:.6">Gestión de cuenta</div>';
+    if(!S.cdel)h+='<button onclick="S.cdel=true;rm()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(140,74,74,.1);border:1px solid rgba(140,74,74,.4);border-radius:12px;padding:13px 16px;font-size:.85rem;font-weight:500;color:#e8a0a0;cursor:pointer">🗑️ Eliminar mi cuenta y mis datos</button>';
+    else h+='<div style="background:rgba(140,74,74,.12);border:1px solid rgba(140,74,74,.45);border-radius:14px;padding:16px"><p style="font-size:.82rem;color:#e8a0a0;line-height:1.65;margin:0 0 14px;text-align:center">¿Seguro? Se borrarán tu cuenta, tus datos y tus ideas favoritas.<br><strong>Esta acción no se puede deshacer.</strong></p><div style="display:flex;gap:8px"><button onclick="dela()" style="flex:1;background:rgba(140,74,74,.3);border:1px solid rgba(140,74,74,.6);border-radius:10px;padding:11px;font-size:.82rem;font-weight:600;color:#e8a0a0;cursor:pointer">Sí, eliminar</button><button onclick="S.cdel=false;rm()" class="bg" style="flex:1;font-size:.82rem;padding:11px">Cancelar</button></div></div>';
+    h+='</div>'
+  }
+  h+='</div>';p.innerHTML=h
+}
+function sba(){
+  var e=(document.getElementById('ae')||{}).value||'';
+  var n=(document.getElementById('an')||{}).value||'';
+  var pv=(document.getElementById('pcb')||{}).checked||false;
+  S.aemail=e;S.aname=n;S.pacc=pv;
+  if(e.indexOf('@')<0){S.aerr='Introduce un correo electrónico válido.';rm();return}
+  if(S.amode==='registro'&&!n.trim()){S.aerr='Por favor introduce tu nombre.';rm();return}
+  if(S.amode==='registro'&&!pv){S.aerr='Debes aceptar la política de privacidad para continuar.';rm();return}
+  S.user={n:n||e.split('@')[0],e:e};S.aerr='';rm()
+}
+function lgo(){S.user=null;S.aemail='';S.aname='';S.pacc=false;S.aerr='';S.cdel=false;rm()}
+function dela(){S.favs=[];lgo()}
+function opmod(){document.getElementById('pmod').style.display='flex'}
+function cpmod(){document.getElementById('pmod').style.display='none'}
+
+// DETALLE PRODUCTO
+function shp(id){
+  var pr=PRODS.find(function(p){return p.id===id});if(!pr)return;
+  document.getElementById('dc').innerHTML='<div class="dhr"><div class="de">'+pr.emoji+'</div><div><div class="dt">'+x(pr.type)+'</div><div class="dn">'+x(pr.name)+'</div><div class="dl">'+x(pr.latin)+'</div></div></div><div class="ds">Descripción</div><div class="dtx">'+x(pr.desc)+'</div><div class="ds">Beneficios principales</div><ul class="bl">'+pr.benefits.map(function(b){return'<li>'+x(b)+'</li>'}).join('')+'</ul><div class="ds">Útil para</div><div class="cg" style="margin-bottom:20px">'+pr.concerns.map(function(c){return'<span class="chip so" style="cursor:default">'+x(c)+'</span>'}).join('')+'</div><button class="bo" style="width:100%" onclick="cdov();go(\'r\')">Ver ideas con este ingrediente →</button>';
+  document.getElementById('ov').style.display='flex'
+}
+
+// DETALLE RECETA
+function shr(id){
+  var r=RECS.find(function(x){return x.id===id});if(!r)return;
+  var is=S.sz===50?(r.i50||r.ings):S.sz===100?(r.i100||r.ings):r.ings;
+  var cb='';if(r.cat){var cc=r.cat==='Cabello'?'bc1':r.cat==='Digestión'?'bc2':'bc3';var ci=r.cat==='Cabello'?'💇 Cabello':r.cat==='Digestión'?'🌱 Digestión':'🌼 Eccema';cb='<span class="bge '+cc+'" style="font-size:.72rem;padding:3px 10px">'+ci+'</span>'}
+  var html='<div class="dhr"><div class="de">'+r.emoji+'</div><div><div class="dt">Tip Natural '+cb+'</div><div class="dn">'+x(r.name)+'</div><div class="dl">'+x(r.desc)+'</div></div></div>';
+  html+='<div class="ds">Ingredientes</div><div class="szt"><button class="szb'+(S.sz===50?' on':'')+'" onclick="S.sz=50;shr('+r.id+')">50ml</button><button class="szb'+(S.sz===100?' on':'')+'" onclick="S.sz=100;shr('+r.id+')">100ml</button><button class="szb'+(S.sz===0?' on':'')+'" onclick="S.sz=0;shr('+r.id+')">General</button></div>';
+  html+='<ul class="bl" style="margin-bottom:4px">'+is.map(function(i){return'<li>'+x(i)+'</li>'}).join('')+'</ul>';
+  if(r.warn)html+='<div class="wb">'+x(r.warn)+'</div>';
+  html+='<div class="ds">Paso a Paso</div>'+r.steps.map(function(s,i){return'<div class="sk"><div class="sn">'+(i+1)+'</div><div class="st">'+x(s)+'</div></div>'}).join('');
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px"><span style="font-size:.8rem;color:var(--cdim)">⏱ '+x(r.time)+'</span><button class="fvb" style="font-size:1.4rem" onclick="tv('+r.id+');shr('+r.id+')">'+(fv(r.id)?'❤️':'🤍')+'</button></div>';
+  document.getElementById('dc').innerHTML=html;
+  document.getElementById('ov').style.display='flex'
+}
+
+function clov(e){if(e.target===document.getElementById('ov'))cdov()}
+function cdov(){document.getElementById('ov').style.display='none'}
+
+ri();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
